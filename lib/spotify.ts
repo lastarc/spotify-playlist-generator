@@ -1,5 +1,6 @@
 import axios from 'axios'
 import config from '../config'
+import type { UserProfile } from '../interfaces'
 
 const authorize_url = 'https://accounts.spotify.com/authorize'
 const token_url = 'https://accounts.spotify.com/api/token'
@@ -7,9 +8,9 @@ const web_api_url = 'https://api.spotify.com/v1'
 const return_uri = config.returnUri
 
 export default class Spotify {
-  private readonly client_id: string;
-  private readonly client_secret: string;
-  private readonly access_token: string;
+  private readonly client_id: string
+  private readonly client_secret: string
+  private readonly access_token: string
 
   constructor({ client_id = '', client_secret = '', access_token = '' }) {
     this.client_id = client_id
@@ -29,7 +30,9 @@ export default class Spotify {
   }
 
   async get_tokens({ code = '' }) {
-    const authorization_token = Buffer.from(`${this.client_id}:${this.client_secret}`).toString('base64')
+    const authorization_token = Buffer.from(
+      `${this.client_id}:${this.client_secret}`
+    ).toString('base64')
     const params = new URLSearchParams()
     params.append('grant_type', 'authorization_code')
     params.append('code', code)
@@ -39,12 +42,30 @@ export default class Spotify {
       url: token_url,
       method: 'POST',
       headers: {
-        'Authorization': `Basic ${authorization_token}`
+        Authorization: `Basic ${authorization_token}`,
       },
       data: params,
     })
 
-    console.log('res data', response.data)
+    return response.data
+  }
+
+  async refresh_token({ refresh_token = '' }) {
+    const authorization_token = Buffer.from(
+      `${this.client_id}:${this.client_secret}`
+    ).toString('base64')
+    const params = new URLSearchParams()
+    params.append('grant_type', 'refresh_token')
+    params.append('refresh_token', refresh_token)
+
+    const response = await axios({
+      url: token_url,
+      method: 'POST',
+      headers: {
+        Authorization: `Basic ${authorization_token}`,
+      },
+      data: params,
+    })
 
     return response.data
   }
@@ -54,16 +75,20 @@ export default class Spotify {
       url: web_api_url + '/me',
       method: 'GET',
       headers: {
-        'Authorization': `Bearer ${this.access_token}`
-      }
+        Authorization: `Bearer ${this.access_token}`,
+      },
     })
 
-    console.log(response)
-
-    return response.data
+    return response.data as UserProfile
   }
 
-  async search(q: string, type: 'track' | 'artist' = 'track', market?: string, limit?: number, offset?: number) {
+  async search(
+    q: string,
+    type: 'track' | 'artist' = 'track',
+    market?: string,
+    limit?: number,
+    offset?: number
+  ) {
     const url = new URL(web_api_url + '/search')
     url.searchParams.append('q', q)
     url.searchParams.append('type', type)
@@ -75,16 +100,18 @@ export default class Spotify {
       url: url.toString(),
       method: 'GET',
       headers: {
-        'Authorization': `Bearer ${this.access_token}`
-      }
+        Authorization: `Bearer ${this.access_token}`,
+      },
     })
-
-    // console.log(response)
 
     return response.data
   }
 
-  async create_playlist(name: string, description?: string, isPublic?: boolean) {
+  async create_playlist(
+    name: string,
+    description?: string,
+    isPublic?: boolean
+  ) {
     const me = await this.get_profile()
     let playlist: Record<string, any> = { name }
     if (description) playlist = { ...playlist, description }
@@ -94,13 +121,11 @@ export default class Spotify {
       url: web_api_url + `/users/${me.id}/playlists`,
       method: 'POST',
       headers: {
-        'Authorization': `Bearer ${this.access_token}`,
+        Authorization: `Bearer ${this.access_token}`,
         'Content-Type': 'application/json',
       },
       data: JSON.stringify(playlist),
     })
-
-    // console.log(response)
 
     return response.data
   }
@@ -112,7 +137,7 @@ export default class Spotify {
       url: url.toString(),
       method: 'POST',
       headers: {
-        'Authorization': `Bearer ${this.access_token}`,
+        Authorization: `Bearer ${this.access_token}`,
         'Content-Type': 'application/json',
       },
     })
