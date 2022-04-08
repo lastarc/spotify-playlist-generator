@@ -21,11 +21,20 @@ export default async function handler(
     return res.status(400).json({ error: '`tracks` is absent in body' })
   }
 
+  let isPublic = false
+  if (req.body.isPublic === 'true') {
+    isPublic = true
+  }
+
   const spotify = new Spotify({
     access_token: req.cookies.access_token,
   })
 
-  const playlist = await spotify.create_playlist(req.body.name)
+  const playlist = await spotify.create_playlist(
+    req.body.name,
+    undefined,
+    isPublic
+  )
   const addedTracks = await spotify.add_tracks_to_playlist(
     playlist.id,
     req.body.tracks.split(',')
