@@ -1,4 +1,8 @@
 <script lang="ts">
+	import Button from '@smui/button';
+	import Textfield from '@smui/textfield';
+	import Paper from '@smui/paper';
+	import List, { Item, Text, PrimaryText, SecondaryText, Graphic } from '@smui/list';
 	import type { UserProfile } from '$lib/spotify';
 
 	interface Props {
@@ -100,138 +104,129 @@
 	}
 </script>
 
-<div class="mx-auto my-5 w-[90vw] max-w-[min(90vw,450px)]">
-	<div class="mb-2 flex justify-end">
-		<button
-			class="cursor-pointer border-none bg-transparent px-3 py-1 text-sm uppercase text-blue-600 hover:bg-blue-600/5 disabled:cursor-not-allowed disabled:opacity-60"
-			disabled={loading}
-			onclick={removeClutter}
-		>
-			Remove clutter
-		</button>
-	</div>
+<div class="container">
+	<Paper elevation={0} style="padding: 20px; max-width: 450px; margin: 20px auto;">
+		<div style="display: flex; justify-content: flex-end; margin-bottom: 8px;">
+			<Button variant="text" onclick={removeClutter} disabled={loading}>
+				Remove clutter
+			</Button>
+		</div>
 
-	<div class="mb-6 flex flex-col gap-4">
-		<div class="flex flex-col gap-2">
-			<label for="track-names" class="text-sm font-medium text-gray-600">Track names</label>
-			<textarea
-				id="track-names"
+		<div style="display: flex; flex-direction: column; gap: 16px; margin-bottom: 24px;">
+			<Textfield
+				textarea
 				bind:value={trackNames}
+				label="Track names"
+				input$rows={5}
+				style="width: 100%;"
 				disabled={loading}
-				placeholder="A song on each line"
-				rows="5"
-				class="min-h-20 resize-y rounded border border-gray-300 bg-gray-100 p-3 font-inherit text-base focus:border-blue-600 focus:bg-white focus:outline-none disabled:cursor-not-allowed disabled:opacity-60"
-			></textarea>
-		</div>
+				input$placeholder="A song on each line"
+			/>
 
-		<div class="flex flex-col gap-2">
-			<label for="common-keyword" class="text-sm font-medium text-gray-600">Common keyword</label>
-			<input
-				id="common-keyword"
-				type="text"
+			<Textfield
 				bind:value={commonKeyword}
+				label="Common keyword"
+				style="width: 100%;"
 				disabled={loading}
-				placeholder="A common keyword"
-				class="rounded border border-gray-300 bg-gray-100 p-3 font-inherit text-base focus:border-blue-600 focus:bg-white focus:outline-none disabled:cursor-not-allowed disabled:opacity-60"
+				input$placeholder="A common keyword"
 			/>
-		</div>
 
-		<div class="flex justify-between">
-			<button
-				class="flex cursor-pointer items-center gap-2 rounded border border-blue-600 bg-white px-4 py-2 text-base text-blue-600 hover:bg-blue-600/5"
-				onclick={reset}
-			>
-				<span>✕</span>
-				Reset
-			</button>
+			<div style="display: flex; justify-content: space-between;">
+				<Button variant="outlined" onclick={reset}>
+					<span style="margin-right: 8px;">✕</span>
+					Reset
+				</Button>
 
-			<button
-				class="flex cursor-pointer items-center gap-2 rounded border-none bg-blue-600 px-4 py-2 text-base text-white hover:bg-blue-700 disabled:cursor-not-allowed disabled:opacity-60"
-				disabled={loading}
-				onclick={findTracks}
-			>
-				{#if loading}
-					Loading...
-				{:else}
-					<span>🔍</span>
-					Find
-				{/if}
-			</button>
-		</div>
-	</div>
-
-	{#if tracks.length > 0}
-		<div class="my-6 overflow-hidden rounded border border-gray-300">
-			{#each tracks as track, idx (idx)}
-				{#if track}
-					<a
-						href={track.external_urls.spotify}
-						target="_blank"
-						rel="noopener noreferrer"
-						class="flex gap-4 border-b border-gray-300 p-3 text-inherit no-underline transition-colors last:border-b-0 hover:bg-gray-100"
-					>
-						<img
-							src={track.album.images[0]?.url}
-							alt={track.name}
-							class="h-14 w-14 rounded object-cover"
-						/>
-						<div class="flex flex-1 flex-col justify-center gap-1">
-							<div class="font-medium">{track.name}</div>
-							<div class="text-sm text-gray-600">{track.artists.map((j) => j.name).join(', ')}</div>
-						</div>
-					</a>
-				{:else}
-					<div class="flex gap-4 border-b border-gray-300 p-3 text-gray-400 last:border-b-0">
-						<div class="flex flex-1 flex-col justify-center gap-1">
-							<div>[Couldn't find the track]</div>
-						</div>
-					</div>
-				{/if}
-			{/each}
-		</div>
-	{/if}
-
-	<div class="flex flex-col gap-4">
-		<div class="flex flex-col gap-2">
-			<label for="playlist-name" class="text-sm font-medium text-gray-600">Playlist name</label>
-			<input
-				id="playlist-name"
-				type="text"
-				bind:value={playlistName}
-				disabled={loading || tracks.filter((i) => i).length === 0}
-				placeholder="Name for the new playlist"
-				class="rounded border border-gray-300 bg-gray-100 p-3 font-inherit text-base focus:border-blue-600 focus:bg-white focus:outline-none disabled:cursor-not-allowed disabled:opacity-60"
-			/>
-		</div>
-
-		{#if alertMessage}
-			<div class="rounded border border-green-200 bg-green-100 p-3 text-green-800">
-				Playlist
-				<a
-					href={alertMessage.url}
-					target="_blank"
-					rel="noopener noreferrer"
-					class="font-medium underline"
-				>
-					{alertMessage.name}
-				</a>
-				has been created!
+				<Button variant="raised" onclick={findTracks} disabled={loading}>
+					{#if loading}
+						Loading...
+					{:else}
+						<span style="margin-right: 8px;">🔍</span>
+						Find
+					{/if}
+				</Button>
 			</div>
+		</div>
+
+		{#if tracks.length > 0}
+			<Paper elevation={1} style="margin: 24px 0;">
+				<List>
+					{#each tracks as track, idx (idx)}
+						{#if track}
+							<Item href={track.external_urls.spotify} target="_blank" rel="noopener noreferrer">
+								<Graphic>
+									<img
+										src={track.album.images[0]?.url}
+										alt={track.name}
+										style="width: 56px; height: 56px; border-radius: 4px; object-fit: cover;"
+									/>
+								</Graphic>
+								<Text>
+									<PrimaryText>{track.name}</PrimaryText>
+									<SecondaryText>{track.artists.map((j) => j.name).join(', ')}</SecondaryText>
+								</Text>
+							</Item>
+						{:else}
+							<Item nonInteractive>
+								<Text>
+									<PrimaryText style="color: #999;">[Couldn't find the track]</PrimaryText>
+								</Text>
+							</Item>
+						{/if}
+					{/each}
+				</List>
+			</Paper>
 		{/if}
 
-		<div class="flex justify-end">
-			<button
-				class="flex cursor-pointer items-center gap-2 rounded border-none bg-blue-600 px-4 py-2 text-base text-white hover:bg-blue-700 disabled:cursor-not-allowed disabled:opacity-60"
+		<div style="display: flex; flex-direction: column; gap: 16px;">
+			<Textfield
+				bind:value={playlistName}
+				label="Playlist name"
+				style="width: 100%;"
 				disabled={loading || tracks.filter((i) => i).length === 0}
-				onclick={createPlaylist}
-			>
-				{#if loading}
-					Loading...
-				{:else}
-					<span>📤</span>
-					Create
-				{/if}
-			</button>
+				input$placeholder="Name for the new playlist"
+			/>
+
+			{#if alertMessage}
+				<Paper
+					elevation={1}
+					style="padding: 12px; background-color: #d4edda; border: 1px solid #c3e6cb; color: #155724;"
+				>
+					Playlist
+					<a
+						href={alertMessage.url}
+						target="_blank"
+						rel="noopener noreferrer"
+						style="color: inherit; font-weight: 500; text-decoration: underline;"
+					>
+						{alertMessage.name}
+					</a>
+					has been created!
+				</Paper>
+			{/if}
+
+			<div style="display: flex; justify-content: flex-end;">
+				<Button
+					variant="raised"
+					onclick={createPlaylist}
+					disabled={loading || tracks.filter((i) => i).length === 0}
+				>
+					{#if loading}
+						Loading...
+					{:else}
+						<span style="margin-right: 8px;">📤</span>
+						Create
+					{/if}
+				</Button>
+			</div>
 		</div>
-	</div>
+	</Paper>
 </div>
+
+<style>
+	.container {
+		width: 90vw;
+		max-width: min(90vw, 450px);
+		margin: 0 auto;
+	}
+</style>

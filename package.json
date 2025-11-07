@@ -36,6 +36,14 @@
 		"vite": "^7.1.10"
 	},
 	"dependencies": {
+		"@smui/button": "^8.0.3",
+		"@smui/common": "^8.0.3",
+		"@smui/icon-button": "^8.0.3",
+		"@smui/list": "^8.0.3",
+		"@smui/menu": "^8.0.3",
+		"@smui/paper": "^8.0.3",
+		"@smui/textfield": "^8.0.3",
+		"@smui/top-app-bar": "^8.0.3",
 		"axios": "^1.7.0",
 		"dotenv": "^16.4.0"
 	}

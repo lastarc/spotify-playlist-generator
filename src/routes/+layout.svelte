@@ -10,21 +10,52 @@
 	<meta name="description" content="Generate Spotify playlist based of on a list of song names" />
 </svelte:head>
 
-<div class="flex min-h-screen flex-col">
+<div class="app">
 	<NavBar user={data.user} />
 
-	<main class="flex flex-1 items-center justify-center">
+	<main>
 		{@render children()}
 	</main>
 
-	<footer class="flex flex-1 items-center justify-center border-t border-gray-200 py-4">
-		<a
-			href="https://github.com/lastarc"
-			target="_blank"
-			rel="noopener noreferrer"
-			class="flex flex-grow items-center justify-center hover:underline"
-		>
+	<footer>
+		<a href="https://github.com/lastarc" target="_blank" rel="noopener noreferrer">
 			Developed by Arc
 		</a>
 	</footer>
 </div>
+
+<style>
+	.app {
+		min-height: 100vh;
+		display: flex;
+		flex-direction: column;
+	}
+
+	main {
+		flex: 1;
+		min-height: 85vh;
+		display: flex;
+		justify-content: center;
+		align-items: center;
+	}
+
+	footer {
+		display: flex;
+		padding: 1rem 0;
+		border-top: 1px solid #eaeaea;
+		justify-content: center;
+		align-items: center;
+	}
+
+	footer a {
+		display: flex;
+		justify-content: center;
+		align-items: center;
+		color: inherit;
+		text-decoration: none;
+	}
+
+	footer a:hover {
+		text-decoration: underline;
+	}
+</style>

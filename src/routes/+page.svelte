@@ -1,4 +1,5 @@
 <script lang="ts">
+	import Button from '@smui/button';
 	import Generator from '$lib/components/Generator.svelte';
 
 	let { data } = $props();
@@ -7,14 +8,34 @@
 {#if data.user}
 	<Generator user={data.user} />
 {:else}
-	<div class="p-8 text-center">
-		<h1 class="mb-4 text-3xl font-bold text-gray-800">Welcome to Spotify Playlist Generator</h1>
-		<p class="mb-8 text-lg text-gray-600">Please log in to create playlists from your song names.</p>
-		<a
+	<div class="welcome">
+		<h1>Welcome to Spotify Playlist Generator</h1>
+		<p>Please log in to create playlists from your song names.</p>
+		<Button
+			variant="raised"
 			href="/api/login"
-			class="inline-block rounded-full bg-green-500 px-8 py-3 font-semibold text-white transition-colors hover:bg-green-600"
+			style="background-color: #1db954; color: white; padding: 12px 32px; border-radius: 24px; font-weight: 600;"
 		>
 			Login with Spotify
-		</a>
+		</Button>
 	</div>
 {/if}
+
+<style>
+	.welcome {
+		text-align: center;
+		padding: 2rem;
+	}
+
+	h1 {
+		font-size: 2rem;
+		margin-bottom: 1rem;
+		color: #333;
+	}
+
+	p {
+		font-size: 1.125rem;
+		color: #666;
+		margin-bottom: 2rem;
+	}
+</style>
