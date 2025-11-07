@@ -134,9 +134,9 @@ export default class Spotify {
 
 	async create_playlist(name: string, description?: string, isPublic?: boolean) {
 		const me = await this.get_profile();
-		let playlist: Record<string, any> = { name };
-		if (description) playlist = { ...playlist, description };
-		if (isPublic !== undefined) playlist = { ...playlist, public: isPublic };
+		const playlist: Record<string, unknown> = { name };
+		if (description) playlist.description = description;
+		if (isPublic !== undefined) playlist.public = isPublic;
 
 		const response = await axios({
 			url: web_api_url + `/users/${me.id}/playlists`,
